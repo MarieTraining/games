@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div id="welcomeScreen">
+        <h1>Welcome to Pong!</h1>
+        <p>Controls:</p>
+        <p>Player 1: W and S keys</p>
+        <p>Player 2: Arrow keys</p>
+        <p>Game ends when a player scores 10 points.</p>
+        <label for="player1Name">Enter Player 1 name:</label>
+        <input type="text" id="player1Name" value="Player 1">
+        <label for="player2Name">Enter Player 2 name:</label>
+        <input type="text" id="player2Name" value="Player 2">
+        <button id="startButton">START</button>
+    </div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script src="{{ url_for('static', filename='game.js') }}"></script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+""" mustr local v pythony pro preklad do java script"""
 import pygame
 import sys
 import tkinter as tk
