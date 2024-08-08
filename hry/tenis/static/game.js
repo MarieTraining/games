@@ -25,30 +25,60 @@ document.addEventListener('DOMContentLoaded', () => {
         if (player1 && player2) {
             welcomeScreen.classList.add('hidden');
             canvas.classList.remove('hidden');
+            gameStarted = true;
+            gameOver = false;
             startCountdown();
         } else {
             alert('Please enter names for both players.');
         }
     });
+// fce na odpocet
+function startCountdown() {
+    let countdown = 5;
 
-    // Countdown function
-    function startCountdown() {
-        let countdown = 5; // Countdown from 5 seconds
-        const countdownInterval = setInterval(() => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = '48px Arial';
-            ctx.fillStyle = 'white';
-            ctx.textAlign = 'center';
-            ctx.fillText(countdown, canvas.width / 2, canvas.height / 2);
+    // Nastaveni pozice a velikosti plátna
+    canvas.style.position = 'absolute';
+    canvas.style.top = '10mm'; // 10mm from the top
+    canvas.width = 200; // Set canvas width
+    canvas.height = 300; // Set canvas height
 
-            countdown--;
+    // Funkce pro výpočet a nastavení horizontální pozice
+    function updateCanvasPosition() {
+        const screenWidth = window.innerWidth;
+        const canvasWidth = canvas.width;
 
-            if (countdown < 0) {
-                clearInterval(countdownInterval);
-                setupGame(); // Start the game after countdown
-            }
-        }, 1000);
+        // Vypocet levého okraje pro centrovani plátna
+        const left = (screenWidth - canvasWidth) / 2;
+
+        canvas.style.left = `${left}px`;
     }
+
+    // Inicializace pozice plátna a při změně velikosti okna
+    updateCanvasPosition();
+    window.addEventListener('resize', updateCanvasPosition);
+
+    const countdownInterval = setInterval(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // "Get Ready" text
+        ctx.font = '36px Arial';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.fillText('Get Ready', canvas.width / 2, canvas.height / 2 - 50);
+
+        // cislo
+        ctx.font = '48px Arial';
+        ctx.fillText(countdown, canvas.width / 2, canvas.height / 2);
+
+        countdown--;
+
+        if (countdown < 0) {
+            clearInterval(countdownInterval);
+            setupGame(); // zacne hry po odpoctu
+        }
+    }, 1000);
+}
+
 
     // Handle close button if it exists
     if (closeButton) {
@@ -76,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.height = screenHeight * 0.8;
         canvas.width = canvas.height * (4 / 3);
 
-        // horizontalni zarovnani okna
+        //  zarovnani okna
         canvas.style.position = 'absolute';
         canvas.style.top = `${(screenHeight - canvas.height) / 2}px`;
         canvas.style.left = `${(screenWidth - canvas.width) / 2}px`;
@@ -189,6 +219,16 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.font = '24px Arial';
             ctx.fillText(`${player1} ${player1Score} - ${player2Score} ${player2}`, canvas.width / 2, 30);
 
+            // kresli skore
+            ctx.font = '24px Arial';
+            ctx.fillStyle = 'white'; // Ensure the text color contrasts with the background
+            ctx.textAlign = 'center'; // Center the text horizontally
+
+            // pozice vertikalne a horizontalne
+            const textY = 30; 
+            ctx.fillText(`${player1} ${player1Score} - ${player2Score} ${player2}`, canvas.width / 2, textY);
+
+
             requestAnimationFrame(gameLoop);
         }
 
@@ -206,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillText(`${winnerName} Wins!`, canvas.width / 2 - ctx.measureText(`${winnerName} Wins!`).width / 2, canvas.height / 2);
         }
 
-        gameStarted = true; // Ensure gameStarted is true after setup
         gameLoop();
     }
 
