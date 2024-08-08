@@ -193,13 +193,13 @@ def main_game(ball_speed_x, ball_speed_y, player1, player2):
         # Zobrazení jmen hráčů s pozadím
         names_text = names_font.render(f"{player1} : {player2}", True, WHITE)
         names_rect = pygame.Rect(screen_width // 2 - names_text.get_width() // 2 - 10, 10, names_text.get_width() + 20, names_text.get_height() + 10)
-        pygame.draw.rect(screen, (0, 0, 0), names_rect)  # Background color for names
+        pygame.draw.rect(screen, (0, 0, 0), names_rect)  
         screen.blit(names_text, (screen_width // 2 - names_text.get_width() // 2, 15))
 
         # Zobrazení skóre s pozadím
         score_text = score_font.render(f"{player1_score}:{player2_score}", True, WHITE)
         score_rect = pygame.Rect(screen_width // 2 - score_text.get_width() // 2 - 10, 80, score_text.get_width() + 20, score_text.get_height() + 10)
-        pygame.draw.rect(screen, (0, 0, 0), score_rect)  # Background color for score
+        pygame.draw.rect(screen, (0, 0, 0), score_rect)  
         screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, 85))
 
         # Zobrazit tlačítko Zavřít (pri zvetseni na obrazovku se da manualne vypnout)
@@ -213,7 +213,7 @@ def display_winner(winner_name):
     winner_text = score_font.render(f"{winner_name} Wins!", True, WHITE)
     screen.blit(winner_text, (screen_width // 2 - winner_text.get_width() // 2, screen_height // 2 - winner_text.get_height() // 2))
     pygame.display.flip()
-    time.sleep(3)  # Display winner for 3 seconds before exiting
+    time.sleep(3)  
     pygame.quit()
     sys.exit()
 

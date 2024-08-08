@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('startButton');
-    const closeButton = document.getElementById('closeButton');
+    const closeButton = document.getElementById('closeButton'); // This will be null if the button is removed
     const welcomeScreen = document.getElementById('welcomeScreen');
     const gameCanvas = document.getElementById('gameCanvas');
-    const difficultySelect = document.getElementById('difficultySelect'); // Added
+    const difficultySelect = document.getElementById('difficultySelect');
 
     // herni okno
     const canvas = gameCanvas;
@@ -33,12 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // co se deje po zmacknuti klaves
-    closeButton.addEventListener('click', () => {
-        if (confirm('Are you sure you want to close the game?')) {
-            window.close();
-        }
-    });
+    // Handle close button if it exists
+    if (closeButton) {
+        closeButton.addEventListener('click', () => {
+            if (confirm('Are you sure you want to close the game?')) {
+                window.close();
+            }
+        });
+    }
 
     document.addEventListener('keydown', (event) => {
         keys[event.code] = true;
