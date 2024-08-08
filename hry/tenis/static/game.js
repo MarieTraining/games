@@ -25,13 +25,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (player1 && player2) {
             welcomeScreen.classList.add('hidden');
             canvas.classList.remove('hidden');
-            gameStarted = true;
-            gameOver = false;
-            setupGame();
+            startCountdown();
         } else {
             alert('Please enter names for both players.');
         }
     });
+
+    // Countdown function
+    function startCountdown() {
+        let countdown = 5; // Countdown from 5 seconds
+        const countdownInterval = setInterval(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '48px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText(countdown, canvas.width / 2, canvas.height / 2);
+
+            countdown--;
+
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                setupGame(); // Start the game after countdown
+            }
+        }, 1000);
+    }
 
     // Handle close button if it exists
     if (closeButton) {
@@ -101,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         function gameLoop() {
             if (!gameStarted || gameOver) return;
 
-            // Handle input
             if (keys['KeyW'] && leftPaddle.y > 0) {
                 leftPaddle.y -= paddleSpeed;
             }
@@ -115,16 +131,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 rightPaddle.y += paddleSpeed;
             }
 
-            // Move ball
+            // pohyb mice
             ball.x += ball.speedX;
             ball.y += ball.speedY;
 
-            // Ball collision with top and bottom
+            // mis vs. vrsek/spodek
             if (ball.y <= 0 || ball.y + ball.size >= canvas.height) {
                 ball.speedY *= -1;
             }
 
-            // Ball collision with paddles
+            // mic vs. palky
             if (ball.x <= leftPaddle.x + leftPaddle.width &&
                 ball.y + ball.size >= leftPaddle.y &&
                 ball.y <= leftPaddle.y + leftPaddle.height) {
@@ -138,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ball.x = rightPaddle.x - ball.size;
             }
 
-            // Ball out of bounds
+            // mic mimo limity
             if (ball.x <= 0) {
                 player2Score++;
                 if (player2Score >= 10) {
@@ -190,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillText(`${winnerName} Wins!`, canvas.width / 2 - ctx.measureText(`${winnerName} Wins!`).width / 2, canvas.height / 2);
         }
 
+        gameStarted = true; // Ensure gameStarted is true after setup
         gameLoop();
     }
 
