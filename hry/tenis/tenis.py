@@ -202,7 +202,7 @@ def main_game(ball_speed_x, ball_speed_y, player1, player2):
         pygame.draw.rect(screen, (0, 0, 0), score_rect)  # Background color for score
         screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, 85))
 
-        # Zobrazit tlačítko Zavřít
+        # Zobrazit tlačítko Zavřít (pri zvetseni na obrazovku se da manualne vypnout)
         draw_close_button()
 
         pygame.display.flip()

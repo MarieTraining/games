@@ -1,162 +1,180 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const screenWidth = canvas.width;
-const screenHeight = canvas.height;
+document.addEventListener('DOMContentLoaded', () => {
+    const startButton = document.getElementById('startButton');
+    const closeButton = document.getElementById('closeButton');
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const gameCanvas = document.getElementById('gameCanvas');
 
-const paddleWidth = 15;
-const paddleHeight = 100;
-const paddleSpeed = 7;
-const ballSize = 20;
+    // herni okno
+    const canvas = gameCanvas;
+    const ctx = canvas.getContext('2d');
 
-let player1Score = 0;
-let player2Score = 0;
-let ballSpeedX;
-let ballSpeedY;
+    // promenne
+    let player1, player2;
+    let gameStarted = false;
+    let gameOver = false;
 
-let leftPaddle = { x: 50, y: screenHeight / 2 - paddleHeight / 2 };
-let rightPaddle = { x: screenWidth - 50 - paddleWidth, y: screenHeight / 2 - paddleHeight / 2 };
-let ball = { x: screenWidth / 2 - ballSize / 2, y: screenHeight / 2 - ballSize / 2, speedX: 0, speedY: 0 };
-
-const welcomeScreen = document.getElementById('welcomeScreen');
-const startButton = document.getElementById('startButton');
-const player1NameInput = document.getElementById('player1Name');
-const player2NameInput = document.getElementById('player2Name');
-
-function showWelcomeScreen() {
-    welcomeScreen.classList.remove('hidden');
-}
-
-function startGame() {
-    welcomeScreen.classList.add('hidden');
-    ballSpeedX = selectDifficulty();
-    ballSpeedY = ballSpeedX;
-    countdown();
-    gameLoop();
-}
-
-function selectDifficulty() {
-    // Choose difficulty (replace with your preferred way to choose difficulty)
-    return 5; // Default difficulty
-}
-
-function countdown() {
-    let count = 3;
-    const interval = setInterval(() => {
-        ctx.clearRect(0, 0, screenWidth, screenHeight);
-        ctx.font = '74px Arial';
-        ctx.fillStyle = 'white';
-        ctx.textAlign = 'center';
-        ctx.fillText(count, screenWidth / 2, screenHeight / 2);
-        count -= 1;
-        if (count < 0) {
-            clearInterval(interval);
-        }
-    }, 1000);
-}
-
-function gameLoop() {
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-    
-    function update() {
-        // Pohyb palek
-        if (keys['w'] && leftPaddle.y > 0) leftPaddle.y -= paddleSpeed;
-        if (keys['s'] && leftPaddle.y < screenHeight - paddleHeight) leftPaddle.y += paddleSpeed;
-        if (keys['ArrowUp'] && rightPaddle.y > 0) rightPaddle.y -= paddleSpeed;
-        if (keys['ArrowDown'] && rightPaddle.y < screenHeight - paddleHeight) rightPaddle.y += paddleSpeed;
-
-        // Pohyb mice
-        ball.x += ballSpeedX;
-        ball.y += ballSpeedY;
-
-        // Kolize mice nahore a dole
-        if (ball.y <= 0 || ball.y >= screenHeight - ballSize) ballSpeedY *= -1;
-
-        // Kolize mice s palkami
-        if (ball.x <= leftPaddle.x + paddleWidth && ball.y + ballSize > leftPaddle.y && ball.y < leftPaddle.y + paddleHeight) {
-            ballSpeedX *= -1;
-            ball.x = leftPaddle.x + paddleWidth;
-        } else if (ball.x >= rightPaddle.x - ballSize && ball.y + ballSize > rightPaddle.y && ball.y < rightPaddle.y + paddleHeight) {
-            ballSpeedX *= -1;
-            ball.x = rightPaddle.x - ballSize;
-        }
-
-        // Mic mimo limity (reset)
-        if (ball.x <= 0) {
-            player2Score += 1;
-            resetBall();
-        } else if (ball.x >= screenWidth - ballSize) {
-            player1Score += 1;
-            resetBall();
-        }
-
-        // Check jestli nekdo z hracu dosahl 10 bodu=vyhral
-        if (player1Score >= 10) {
-            displayWinner(player1NameInput.value);
-            return;
-        }
-        if (player2Score >= 10) {
-            displayWinner(player2NameInput.value);
-            return;
-        }
-
-        // Kresleni
-        ctx.clearRect(0, 0, screenWidth, screenHeight);
-        ctx.fillStyle = 'white';
-        ctx.fillRect(leftPaddle.x, leftPaddle.y, paddleWidth, paddleHeight);
-        ctx.fillRect(rightPaddle.x, rightPaddle.y, paddleWidth, paddleHeight);
-        ctx.beginPath();
-        ctx.arc(ball.x + ballSize / 2, ball.y + ballSize / 2, ballSize / 2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.moveTo(screenWidth / 2, 0);
-        ctx.lineTo(screenWidth / 2, screenHeight);
-        ctx.stroke();
-
-        // Zobrazení jmen hráčů s pozadím
-        ctx.fillStyle = 'black';
-        ctx.fillRect(screenWidth / 2 - 150, 10, 300, 50);
-        ctx.fillStyle = 'white';
-        ctx.font = '48px Arial';
-        ctx.fillText(`${player1NameInput.value} : ${player2NameInput.value}`, screenWidth / 2, 50);
-
-        // Zobrazení skóre s pozadím
-        ctx.fillStyle = 'black';
-        ctx.fillRect(screenWidth / 2 - 150, 80, 300, 50);
-        ctx.fillStyle = 'white';
-        ctx.font = '74px Arial';
-        ctx.fillText(`${player1Score}:${player2Score}`, screenWidth / 2, 120);
-    }
-
-    function resetBall() {
-        ball.x = screenWidth / 2 - ballSize / 2;
-        ball.y = screenHeight / 2 - ballSize / 2;
-        ballSpeedX *= -1;
-    }
-
-    function handleKeyDown(event) {
-        keys[event.key] = true;
-    }
-
-    function handleKeyUp(event) {
-        keys[event.key] = false;
-    }
-
+    // promenne pohyb palky
     const keys = {};
 
-    setInterval(update, 1000 / 60);
-}
+    // start button
+    startButton.addEventListener('click', () => {
+        player1 = document.getElementById('player1Name').value || 'Player 1';
+        player2 = document.getElementById('player2Name').value || 'Player 2';
+        
+        if (player1 && player2) {
+            welcomeScreen.classList.add('hidden');
+            canvas.classList.remove('hidden');
+            gameStarted = true;
+            gameOver = false;
+            setupGame();
+        } else {
+            alert('Please enter names for both players.');
+        }
+    });
 
-function displayWinner(winnerName) {
-    ctx.clearRect(0, 0, screenWidth, screenHeight);
-    ctx.font = '74px Arial';
-    ctx.fillStyle = 'white';
-    ctx.textAlign = 'center';
-    ctx.fillText(`${winnerName} Wins!`, screenWidth / 2, screenHeight / 2);
-    setTimeout(() => {
-        window.location.reload();
-    }, 3000);
-}
+    // co se deje po zmacknuti klaves
+    closeButton.addEventListener('click', () => {
+        if (confirm('Are you sure you want to close the game?')) {
+            window.close();
+        }
+    });
 
-startButton.addEventListener('click', startGame);
+    document.addEventListener('keydown', (event) => {
+        keys[event.code] = true;
+    });
 
-showWelcomeScreen();
+    document.addEventListener('keyup', (event) => {
+        keys[event.code] = false;
+    });
+
+    function setupGame() {
+        // precte velikost obrazovky
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        // vyska herniho okna(80% vysky obrazovky;  4:3 pomer stran)
+        canvas.height = screenHeight * 0.8;
+        canvas.width = canvas.height * (4 / 3);
+
+        // horizontalni zarovnani okna
+        canvas.style.position = 'absolute';
+        canvas.style.top = `${(screenHeight - canvas.height) / 2}px`;
+        canvas.style.left = `${(screenWidth - canvas.width) / 2}px`;
+
+        // herni objekty v %ech velikosti okna (0.02 =2%)
+        const paddleWidth = canvas.width * 0.02; 
+        const paddleHeight = canvas.height * 0.2; 
+        const ballSize = canvas.width * 0.025; 
+        const paddleSpeed = 4; // 4 pro plynuly pohyb
+        let ballSpeedX = 5; 
+        let ballSpeedY = 3; 
+
+        let leftPaddle = { x: canvas.width * 0.05, y: canvas.height / 2 - paddleHeight / 2, width: paddleWidth, height: paddleHeight };
+        let rightPaddle = { x: canvas.width - canvas.width * 0.05 - paddleWidth, y: canvas.height / 2 - paddleHeight / 2, width: paddleWidth, height: paddleHeight };
+        let ball = { x: canvas.width / 2 - ballSize / 2, y: canvas.height / 2 - ballSize / 2, size: ballSize, speedX: ballSpeedX, speedY: ballSpeedY };
+
+        let player1Score = 0;
+        let player2Score = 0;
+
+        function gameLoop() {
+            if (!gameStarted || gameOver) return;
+
+            // Handle input
+            if (keys['KeyW'] && leftPaddle.y > 0) {
+                leftPaddle.y -= paddleSpeed;
+            }
+            if (keys['KeyS'] && leftPaddle.y < canvas.height - leftPaddle.height) {
+                leftPaddle.y += paddleSpeed;
+            }
+            if (keys['ArrowUp'] && rightPaddle.y > 0) {
+                rightPaddle.y -= paddleSpeed;
+            }
+            if (keys['ArrowDown'] && rightPaddle.y < canvas.height - rightPaddle.height) {
+                rightPaddle.y += paddleSpeed;
+            }
+
+            // Move ball
+            ball.x += ball.speedX;
+            ball.y += ball.speedY;
+
+            // Ball collision with top and bottom
+            if (ball.y <= 0 || ball.y + ball.size >= canvas.height) {
+                ball.speedY *= -1;
+            }
+
+            // Ball collision with paddles
+            if (ball.x <= leftPaddle.x + leftPaddle.width &&
+                ball.y + ball.size >= leftPaddle.y &&
+                ball.y <= leftPaddle.y + leftPaddle.height) {
+                ball.speedX *= -1;
+                ball.x = leftPaddle.x + leftPaddle.width;
+            }
+            if (ball.x + ball.size >= rightPaddle.x &&
+                ball.y + ball.size >= rightPaddle.y &&
+                ball.y <= rightPaddle.y + rightPaddle.height) {
+                ball.speedX *= -1;
+                ball.x = rightPaddle.x - ball.size;
+            }
+
+            // Ball out of bounds
+            if (ball.x <= 0) {
+                player2Score++;
+                if (player2Score >= 10) {
+                    endGame(player2);
+                    return;
+                }
+                resetBall();
+            }
+            if (ball.x + ball.size >= canvas.width) {
+                player1Score++;
+                if (player1Score >= 10) {
+                    endGame(player1);
+                    return;
+                }
+                resetBall();
+            }
+
+            // kresleni
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // kresli palky
+            ctx.fillStyle = 'white';
+            ctx.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
+            ctx.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
+
+            // kresli mic
+            ctx.beginPath();
+            ctx.arc(ball.x + ball.size / 2, ball.y + ball.size / 2, ball.size / 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // kresli skore
+            ctx.font = '24px Arial';
+            ctx.fillText(`${player1} ${player1Score} - ${player2Score} ${player2}`, canvas.width / 2, 30);
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resetBall() {
+            ball.x = canvas.width / 2 - ball.size / 2;
+            ball.y = canvas.height / 2 - ball.size / 2;
+            ball.speedX *= -1;
+        }
+
+        function endGame(winnerName) {
+            gameOver = true;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '36px Arial';
+            ctx.fillText(`${winnerName} Wins!`, canvas.width / 2 - ctx.measureText(`${winnerName} Wins!`).width / 2, canvas.height / 2);
+        }
+
+        gameLoop();
+    }
+
+    // prizpusobeni velikosti okna
+    window.addEventListener('resize', () => {
+        if (gameStarted && !gameOver) {
+            setupGame();
+        }
+    });
+});

@@ -5,10 +5,13 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
+    overflow: hidden; /* Prevents scrollbars from appearing */
 }
 
 #gameCanvas {
     border: 2px solid white;
+    display: block; /* Ensures the canvas takes up the full space */
+    margin: 0 auto; /* Centers the canvas */
 }
 
 #welcomeScreen {
@@ -16,6 +19,7 @@ body {
     background: #222;
     border-radius: 8px;
     margin: 20px;
+    position: relative; /* Allows positioning within this container */
 }
 
 #startButton {
@@ -33,4 +37,26 @@ body {
 
 .hidden {
     display: none;
+    border: none; /* Remove any border */
+    background: transparent; /* Ensure background is transparent */
 }
+#closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: #f00;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 40px;
+    text-align: center;
+    z-index: 1000; /* Ensures the button is above other elements */
+}
+
+#closeButton:hover {
+    background-color: #d00; /* Slightly darker red when hovered */
+}
+
