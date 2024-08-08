@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeButton = document.getElementById('closeButton');
     const welcomeScreen = document.getElementById('welcomeScreen');
     const gameCanvas = document.getElementById('gameCanvas');
+    const difficultySelect = document.getElementById('difficultySelect'); // Added
 
     // herni okno
     const canvas = gameCanvas;
@@ -61,13 +62,32 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.style.top = `${(screenHeight - canvas.height) / 2}px`;
         canvas.style.left = `${(screenWidth - canvas.width) / 2}px`;
 
+        // vyber obtiznosti
+        const difficulty = difficultySelect.value;
+        let paddleSpeed, ballSpeedX, ballSpeedY;
+
+        switch (difficulty) {
+            case 'beginner':
+                paddleSpeed = 4;
+                ballSpeedX = 3;
+                ballSpeedY = 2;
+                break;
+            case 'guru':
+                paddleSpeed = 6;
+                ballSpeedX = 5;
+                ballSpeedY = 3;
+                break;
+            case 'djokovic':
+                paddleSpeed = 8;
+                ballSpeedX = 7;
+                ballSpeedY = 5;
+                break;
+        }
+
         // herni objekty v %ech velikosti okna (0.02 =2%)
         const paddleWidth = canvas.width * 0.02; 
         const paddleHeight = canvas.height * 0.2; 
         const ballSize = canvas.width * 0.025; 
-        const paddleSpeed = 4; // 4 pro plynuly pohyb
-        let ballSpeedX = 5; 
-        let ballSpeedY = 3; 
 
         let leftPaddle = { x: canvas.width * 0.05, y: canvas.height / 2 - paddleHeight / 2, width: paddleWidth, height: paddleHeight };
         let rightPaddle = { x: canvas.width - canvas.width * 0.05 - paddleWidth, y: canvas.height / 2 - paddleHeight / 2, width: paddleWidth, height: paddleHeight };

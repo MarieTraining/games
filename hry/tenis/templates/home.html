@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tenis Game</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <!-- Favicon link -->
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div id="welcomeScreen">
@@ -21,6 +19,12 @@
         <p>Enter Player Names:</p>
         <input type="text" id="player1Name" placeholder="Player 1">
         <input type="text" id="player2Name" placeholder="Player 2">
+        <p>Select Difficulty:</p>
+        <select id="difficultySelect">
+            <option value="beginner">Beginner</option>
+            <option value="guru">Guru</option>
+            <option value="djokovic">Djokovic</option>
+        </select>
         <button id="startButton">START</button>
     </div>
     <canvas id="gameCanvas" class="hidden"></canvas>
